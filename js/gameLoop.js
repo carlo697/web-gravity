@@ -1,3 +1,6 @@
+import MassObj from "./MassObj.js";
+import Vector2 from "./Vector2.js";
+
 let lastFrameTime = 0;
 
 // fps counter
@@ -12,7 +15,7 @@ let frameIndex = 0;
 
 // world variables
 const worldRoot = document.querySelector(".world");
-const worldObjects = [];
+export const worldObjects = [];
 let mousePos;
 
 // physics
@@ -37,9 +40,9 @@ const navButtonsContainer = document.querySelector(".navigation");
 window.addEventListener("load", init);
 
 // physics
-let collidingPairs = [];
+export let collidingPairs = [];
 
-let sun;
+export let sun;
 
 handleResize();
 

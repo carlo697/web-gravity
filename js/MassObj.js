@@ -1,5 +1,7 @@
-let gravityConst = 1;
+import Vector2 from "./Vector2.js";
+import { worldObjects, sun, collidingPairs } from "./gameLoop.js";
 
+let gravityConst = 1;
 
 class MassObj {
 	constructor(position, radius, mass) {
@@ -104,3 +106,5 @@ class MassObj {
 		worldObjects.splice(index, 1);
 	}
 }
+
+export default MassObj;

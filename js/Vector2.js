@@ -59,3 +59,5 @@ class Vector2 {
 	}
 
 }
+
+export default Vector2;
