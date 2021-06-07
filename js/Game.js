@@ -32,43 +32,7 @@ class Game {
         this.start();
     }
 
-    start() {
-        // Create a sun
-        this.sun = new MassObj(this.worldCenter, 15, 30000);
-        this.sun.colorStyle = "rgb(255, 255, 255)";
-
-        // Spawn random asteorids
-        for (let i = 0; i < 400; i++) {
-            // Get a random position and size
-            const x = this.worldCenter.x + (Math.random() * 2 - 1) * 300;
-            const y = this.worldCenter.y + (Math.random() * 2 - 1) * 300;
-            const size = 0.5 + Math.random() * 1;
-
-            // Spawn the asteorid
-            const obj = new MassObj(new Vector2(x, y), size, size * size * 4);
-
-            // get tangent direction
-            const dirr = this.sun.position.substract(obj.position);
-            const distance = dirr.magnitude;
-            const dirrNormalized = dirr.normalized;
-            // get a random value to alter the orbit a bit
-            const random = 1 + (Math.random() * 2 - 1) * 0.1;
-
-            // apply a velocity to make it orbit the sun
-            obj.velocity = new Vector2(
-                -dirrNormalized.y *
-                    Math.sqrt(this.sun.mass / distance) *
-                    random,
-                dirrNormalized.x * Math.sqrt(this.sun.mass / distance) * random
-            );
-
-            // set a random color
-            const r = 55 + Math.random() * 200;
-            const g = 55 + Math.random() * 200;
-            const b = 55 + Math.random() * 200;
-            obj.colorStyle = `rgb(${r},${g},${b})`;
-        }
-    }
+    start() {}
 
     update(elapsed) {
         this.elapsedTime = elapsed;
@@ -233,6 +197,16 @@ class Game {
 
             this.context.fill();
         }
+
+        this.context.fillStyle = "pink";
+        this.context.beginPath();
+        this.context.fillRect(
+            this.worldCenter.x - 3,
+            this.worldCenter.y - 3,
+            6,
+            6
+        );
+        this.context.fill();
     }
 }
 
