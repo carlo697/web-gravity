@@ -27,6 +27,35 @@
     color: white;
     position: fixed;
     top: 0;
-    left: 0;
+    right: 0;
     pointer-events: none;
+    text-align: right;
+    padding: 5px;
+}
+
+.sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    height: 100%;
+    width: 250px;
+    transition: left 0.2s;
+}
+
+.sidebar-wrapper.open {
+    left: 0;
+}
+
+.sidebar {
+    background-color: white;
+    height: 100%;
+    width: 100%;
+}
+
+.sidebar-button {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 10px;
+    right: -60px;
 }
