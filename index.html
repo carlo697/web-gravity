@@ -21,17 +21,32 @@
 		<div class="sidebar">
 			<form>
 				<div class="section">
-					
+					<h2>Rendering</h2>
+					<div class="form-control">
+						<label for="skipRenderFrames">Skip frames</label>
+						<input
+							type="number"
+							name="skipRenderFrames"
+							id="skipRenderFrames"
+							value="1"
+							min="0"
+							max="20">
+					</div>
+
+					<div class="form-control">
+						<label for="renderSquares">Render squares</label>
+						<input type="checkbox" name="renderSquares" id="renderSquares" checked="on">
+					</div>
 				</div>
-				<input type="submit" value="Generar" id="submit">
+				<input type="submit" value="Apply Changes" id="submit">
 			</form>
 		</div>
 		<button class="sidebar-button">Menu</button>
 	</div>
-	
+
 	<script src="js/PanAndZoom.js"></script>
 	<script src="js/App.js" type="module"></script>
-	<script src="js/SettingsMenu.js"></script>
-<body>
+
+	<body>
 
 </html>
