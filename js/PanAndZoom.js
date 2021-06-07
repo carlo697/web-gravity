@@ -79,20 +79,11 @@ function handlePinch(e)
     }
 }
 
-function adjustZoom(zoomAmount, zoomFactor)
+function adjustZoom(zoomAmount)
 {
     if (!isDragging)
     {
-        if (zoomAmount)
-        {
-            cameraZoom += zoomAmount
-        }
-        else if (zoomFactor)
-        {
-            console.log(zoomFactor)
-            cameraZoom = zoomFactor*lastZoom
-        }
-        
+        cameraZoom += zoomAmount
         cameraZoom = Math.min( cameraZoom, MAX_ZOOM )
         cameraZoom = Math.max( cameraZoom, MIN_ZOOM )
     }

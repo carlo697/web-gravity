@@ -44,7 +44,7 @@ export let collidingPairs = [];
 
 export let sun;
 
-handleResize();
+//handleResize();
 
 function init () {
 	// spawn random circles
@@ -152,21 +152,6 @@ function init () {
 	requestAnimationFrame(loop);
 }
 
-function handleResize() {
-	const windowWidth = window.innerWidth;
-	const windowHeight = window.innerHeight;
-
-	const desiredPixels = 500000;
-
-	const aspectRelation = windowWidth / windowHeight;
-
-	const width = Math.sqrt(aspectRelation * desiredPixels);
-	const height = width / aspectRelation;
-
-	canvas.width = width;
-	canvas.height = height;
-}
-
 function loop (elapsed) {
 	// elapsed time since last frame
 	let delta = (elapsed - lastFrameTime) / 1000;
@@ -226,8 +211,8 @@ function loop (elapsed) {
 }
 
 function render(delta)  {
-	canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
     
     // Translate to the canvas centre before zooming - so you'll always zoom on what you're looking directly at
     context.translate( window.innerWidth / 2, window.innerHeight / 2 )
