@@ -1,5 +1,5 @@
+import Game from "./Game.js";
 import Vector2 from "./Vector2.js";
-import { worldObjects, sun, collidingPairs } from "./gameLoop.js";
 
 let gravityConst = 1;
 
@@ -22,7 +22,7 @@ class MassObj {
 
         this.collidingObjs = [];
 
-        worldObjects.push(this);
+        Game.instance.worldObjects.push(this);
     }
 
     update(delta) {
@@ -31,8 +31,8 @@ class MassObj {
 
         let target;
         // loop through every obj in the world
-        for (let i = 0; i < worldObjects.length; i++) {
-            target = worldObjects[i];
+        for (let i = 0; i < Game.instance.worldObjects.length; i++) {
+            target = Game.instance.worldObjects[i];
 
             // if the object is not this one
             if (target != this) {
@@ -55,7 +55,7 @@ class MassObj {
                 // if both objects are touching
                 if (distance <= this.radius + target.radius) {
                     // if it is touching the sun, we'll remove it
-                    if (target == sun) {
+                    if (target == Game.instance.sun) {
                         this.remove();
                         return;
                     }
@@ -77,7 +77,7 @@ class MassObj {
                             directionNormalized.y * overlapDistance
                     );
 
-                    collidingPairs.push([this, target]);
+                    Game.instance.collidingPairs.push([this, target]);
                     this.collidingObjs.push(target);
                 }
 
@@ -111,9 +111,9 @@ class MassObj {
 
     remove() {
         // find the index in the array to remove this object
-        const index = worldObjects.indexOf(this);
+        const index = Game.instance.worldObjects.indexOf(this);
         // remove it from the array
-        worldObjects.splice(index, 1);
+        Game.instance.worldObjects.splice(index, 1);
     }
 }
 

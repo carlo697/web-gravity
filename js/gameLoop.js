@@ -47,57 +47,6 @@ export let sun;
 //handleResize();
 
 function init() {
-    // spawn random circles
-    /*for (let i = 0; i < 200; i++) {
-		const x = 100 + Math.random() * 600;
-		const y = 50 + Math.random() * 400;
-
-		const size = 5 + (Math.random() * 5);
-
-		const xVel = (Math.random() * 2 - 1) * 30;
-		const yVel = (Math.random() * 2 - 1) * 30;
-
-		new MassObj(
-			new Vector2(x, y),
-			size,
-			(size * size) * 20,
-		).setVelocity(new Vector2(xVel, yVel));
-	}*/
-
-    /*
-	for (let i = 0; i < 200; i++) {
-		const x = 50 + Math.random() * 200;
-		const y = 50 + Math.random() * 200;
-
-		const size = 2 + (Math.random() * 2);
-
-		const xVel = (Math.random() * 2 - 1) * 20;
-		const yVel = (Math.random() * 2 - 1) * 20;
-
-		new MassObj(
-			new Vector2(x, y),
-			size,
-			(size * size) * 30,
-		);//.setVelocity(new Vector2(xVel, yVel));
-	}
-
-	for (let i = 0; i < 50; i++) {
-		const x = 400 + Math.random() * 200;
-		const y = 50 + Math.random() * 200;
-
-		const size = 2 + (Math.random() * 2);
-
-		const xVel = Math.random() * 1;
-		const yVel = Math.random() * 10;
-
-		new MassObj(
-			new Vector2(x, y),
-			size,
-			(size * size) * 30,
-		).setVelocity(new Vector2(0, 8));
-	}
-	*/
-
     sun = new MassObj(worldCenter, 15, 30000);
 
     sun.colorStyle = "rgb(255, 255, 255)";
