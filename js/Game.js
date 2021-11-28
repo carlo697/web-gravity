@@ -2,212 +2,207 @@ import MassObj from "./MassObj.js";
 import Vector2 from "./Vector2.js";
 
 class Game {
-    static instance;
+  static instance;
 
-    constructor(canvas) {
-        Game.instance = this;
+  constructor(canvas) {
+    Game.instance = this;
 
-        // Canvas
-        this.canvas = canvas;
-        this.context = canvas.getContext("2d");
+    // Canvas
+    this.canvas = canvas;
+    this.context = canvas.getContext("2d");
 
-        // Loop
-        this.lastFrameTime = 0;
-        this.elapsedTime = 0;
+    // Loop
+    this.lastFrameTime = 0;
+    this.elapsedTime = 0;
 
-        // Objects
-        this.worldObjects = [];
+    // Objects
+    this.worldObjects = [];
 
-        // Rendering
-        this.renderFrameAccumulated = 0;
-        this.renderCount = 0;
-        this.skipRenderFrames = 0;
-        this.renderSquares = true;
+    // Rendering
+    this.renderFrameAccumulated = 0;
+    this.renderCount = 0;
+    this.skipRenderFrames = 0;
+    this.renderSquares = true;
 
-        // physics
-        this.worldCenter = new Vector2(0, 0);
-        this.worldSize = new Vector2(1000, 1000);
-        this.collidingPairs = [];
+    // physics
+    this.worldCenter = new Vector2(0, 0);
+    this.worldSize = new Vector2(1000, 1000);
+    this.collidingPairs = [];
 
-        this.start();
+    this.start();
+  }
+
+  start() {}
+
+  update(elapsed) {
+    this.elapsedTime = elapsed;
+
+    // elapsed time since last frame
+    let delta = (elapsed - this.lastFrameTime) / 1000;
+
+    // pause everything for a moment at the beginning
+    if (elapsed < 4000) {
+      delta = 0;
     }
 
-    start() {}
-
-    update(elapsed) {
-        this.elapsedTime = elapsed;
-
-        // elapsed time since last frame
-        let delta = (elapsed - this.lastFrameTime) / 1000;
-
-        // pause everything for a moment at the beginning
-        if (elapsed < 4000) {
-            delta = 0;
-        }
-
-        // if it's running too slow (or when it seems so), reset the delta
-        if (delta > 0.5) {
-            delta = 0;
-        }
-
-        // update loop
-        this.physicsFrame(delta);
-
-        this.renderFrameAccumulated += delta;
-
-        // render loop
-        if (this.renderCount === this.skipRenderFrames) {
-            this.renderFrame(this.renderFrameAccumulated);
-
-            this.renderFrameAccumulated = 0;
-            this.renderCount = 0;
-        } else {
-            this.renderCount++;
-        }
-
-        // request new frame
-        this.lastFrameTime = elapsed;
+    // if it's running too slow (or when it seems so), reset the delta
+    if (delta > 0.5) {
+      delta = 0;
     }
 
-    physicsFrame(delta) {
-        if (this.sun) {
-            this.sun.velocity = Vector2.zero;
-        }
+    // update loop
+    this.physicsFrame(delta);
 
-        // update positions and velocities
-        let obj;
-        for (let i = 0; i < this.worldObjects.length; i++) {
-            obj = this.worldObjects[i];
+    this.renderFrameAccumulated += delta;
 
-            obj.velocity = new Vector2(
-                obj.velocity.x + obj.aceleration.x * delta,
-                obj.velocity.y + obj.aceleration.y * delta
-            );
+    // render loop
+    if (this.renderCount === this.skipRenderFrames) {
+      this.renderFrame(this.renderFrameAccumulated);
 
-            obj.lasPosition = obj.position.copy;
+      this.renderFrameAccumulated = 0;
+      this.renderCount = 0;
+    } else {
+      this.renderCount++;
+    }
 
-            obj.position = new Vector2(
-                obj.position.x + obj.velocity.x * delta,
-                obj.position.y + obj.velocity.y * delta
-            );
-        }
+    // request new frame
+    this.lastFrameTime = elapsed;
+  }
 
-        // update each object
-        for (var i = 0; i < this.worldObjects.length; i++) {
-            this.worldObjects[i].update(delta);
-        }
+  physicsFrame(delta) {
+    if (this.sun) {
+      this.sun.velocity = Vector2.zero;
+    }
 
-        // iterate through collisions
-        for (var i = 0; i < this.collidingPairs.length; i++) {
-            const a = this.collidingPairs[i][0];
-            const b = this.collidingPairs[i][1];
+    // update positions and velocities
+    let obj;
+    for (let i = 0; i < this.worldObjects.length; i++) {
+      obj = this.worldObjects[i];
 
-            // normal
-            //const normal = b.position.substract(a.position).normalized;
-            const normal = new Vector2(
-                b.position.x - a.position.x,
-                b.position.y - a.position.y
-            ).normalized;
+      obj.velocity = new Vector2(
+        obj.velocity.x + obj.aceleration.x * delta,
+        obj.velocity.y + obj.aceleration.y * delta
+      );
 
-            // tangent
-            const tangent = new Vector2(-normal.y, normal.x);
+      obj.lasPosition = obj.position.copy;
 
-            // dot product tangent
-            /*const dpTanA = a.velocity.dotProduct(tangent);
+      obj.position = new Vector2(
+        obj.position.x + obj.velocity.x * delta,
+        obj.position.y + obj.velocity.y * delta
+      );
+    }
+
+    // update each object
+    for (var i = 0; i < this.worldObjects.length; i++) {
+      this.worldObjects[i].update(delta);
+    }
+
+    // iterate through collisions
+    for (var i = 0; i < this.collidingPairs.length; i++) {
+      const a = this.collidingPairs[i][0];
+      const b = this.collidingPairs[i][1];
+
+      // normal
+      //const normal = b.position.substract(a.position).normalized;
+      const normal = new Vector2(
+        b.position.x - a.position.x,
+        b.position.y - a.position.y
+      ).normalized;
+
+      // tangent
+      const tangent = new Vector2(-normal.y, normal.x);
+
+      // dot product tangent
+      /*const dpTanA = a.velocity.dotProduct(tangent);
             const dpTanB = b.velocity.dotProduct(tangent);*/
-            const dpTanA = a.velocity.x * tangent.x + a.velocity.y * tangent.y;
-            const dpTanB = b.velocity.x * tangent.x + b.velocity.y * tangent.y;
+      const dpTanA = a.velocity.x * tangent.x + a.velocity.y * tangent.y;
+      const dpTanB = b.velocity.x * tangent.x + b.velocity.y * tangent.y;
 
-            // dot product normal
-            //const dpNormA = a.velocity.dotProduct(normal);
-            //const dpNormB = b.velocity.dotProduct(normal);
-            const dpNormA = a.velocity.x * normal.x + a.velocity.y * normal.y;
-            const dpNormB = b.velocity.x * normal.x + b.velocity.y * normal.y;
+      // dot product normal
+      //const dpNormA = a.velocity.dotProduct(normal);
+      //const dpNormB = b.velocity.dotProduct(normal);
+      const dpNormA = a.velocity.x * normal.x + a.velocity.y * normal.y;
+      const dpNormB = b.velocity.x * normal.x + b.velocity.y * normal.y;
 
-            // Conservation of momentum
-            //const mA = (dpNormA * (a.mass - b.mass) + 2 * b.mass * dpNormB) / (a.mass + b.mass);
-            //const mB = (dpNormB * (b.mass - a.mass) + 2 * a.mass * dpNormA) / (a.mass + b.mass);
-            const mA =
-                (0.5 * b.mass * (dpNormB - dpNormA) +
-                    a.mass * dpNormA +
-                    b.mass * dpNormB) /
-                (a.mass + b.mass);
-            const mB =
-                (0.5 * a.mass * (dpNormA - dpNormB) +
-                    a.mass * dpNormA +
-                    b.mass * dpNormB) /
-                (a.mass + b.mass);
+      // Conservation of momentum
+      //const mA = (dpNormA * (a.mass - b.mass) + 2 * b.mass * dpNormB) / (a.mass + b.mass);
+      //const mB = (dpNormB * (b.mass - a.mass) + 2 * a.mass * dpNormA) / (a.mass + b.mass);
+      const mA =
+        (0.5 * b.mass * (dpNormB - dpNormA) +
+          a.mass * dpNormA +
+          b.mass * dpNormB) /
+        (a.mass + b.mass);
+      const mB =
+        (0.5 * a.mass * (dpNormA - dpNormB) +
+          a.mass * dpNormA +
+          b.mass * dpNormB) /
+        (a.mass + b.mass);
 
-            a.velocity = new Vector2(
-                tangent.x * dpTanA + normal.x * mA,
-                tangent.y * dpTanA + normal.y * mA
-            );
+      a.velocity = new Vector2(
+        tangent.x * dpTanA + normal.x * mA,
+        tangent.y * dpTanA + normal.y * mA
+      );
 
-            b.velocity = new Vector2(
-                tangent.x * dpTanB + normal.x * mB,
-                tangent.y * dpTanB + normal.y * mB
-            );
-        }
-
-        // clear array
-        this.collidingPairs.length = 0;
+      b.velocity = new Vector2(
+        tangent.x * dpTanB + normal.x * mB,
+        tangent.y * dpTanB + normal.y * mB
+      );
     }
 
-    renderFrame(delta) {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+    // clear array
+    this.collidingPairs.length = 0;
+  }
 
-        // Translate to the canvas centre before zooming - so you'll always zoom on what you're looking directly at
-        this.context.translate(window.innerWidth / 2, window.innerHeight / 2);
-        this.context.scale(cameraZoom, cameraZoom);
-        this.context.translate(
-            -window.innerWidth / 2 + cameraOffset.x,
-            -window.innerHeight / 2 + cameraOffset.y
-        );
+  renderFrame(delta) {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
 
-        // rendering
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // Translate to the canvas centre before zooming - so you'll always zoom on what you're looking directly at
+    this.context.translate(window.innerWidth / 2, window.innerHeight / 2);
+    this.context.scale(cameraZoom, cameraZoom);
+    this.context.translate(
+      -window.innerWidth / 2 + cameraOffset.x,
+      -window.innerHeight / 2 + cameraOffset.y
+    );
 
-        // draw circles
-        let obj = null;
-        for (let i = 0; i < this.worldObjects.length; i++) {
-            obj = this.worldObjects[i];
+    // rendering
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-            this.context.fillStyle = obj.colorStyle;
-            this.context.beginPath();
+    // draw circles
+    let obj = null;
+    for (let i = 0; i < this.worldObjects.length; i++) {
+      obj = this.worldObjects[i];
 
-            if (this.renderSquares && obj != this.sun) {
-                // draw a square
-                this.context.fillRect(
-                    obj.position.x - obj.radius,
-                    obj.position.y - obj.radius,
-                    obj.radius * 2,
-                    obj.radius * 2
-                );
-            } else {
-                // draw a circle
-                this.context.arc(
-                    obj.position.x,
-                    obj.position.y,
-                    obj.radius,
-                    0,
-                    2 * Math.PI
-                );
-            }
+      this.context.fillStyle = obj.colorStyle;
+      this.context.beginPath();
 
-            this.context.fill();
-        }
-
-        this.context.fillStyle = "pink";
-        this.context.beginPath();
+      if (this.renderSquares && obj != this.sun) {
+        // draw a square
         this.context.fillRect(
-            this.worldCenter.x - 3,
-            this.worldCenter.y - 3,
-            6,
-            6
+          obj.position.x - obj.radius,
+          obj.position.y - obj.radius,
+          obj.radius * 2,
+          obj.radius * 2
         );
-        this.context.fill();
+      } else {
+        // draw a circle
+        this.context.arc(
+          obj.position.x,
+          obj.position.y,
+          obj.radius,
+          0,
+          2 * Math.PI
+        );
+      }
+
+      this.context.fill();
     }
+
+    this.context.fillStyle = "pink";
+    this.context.beginPath();
+    this.context.fillRect(this.worldCenter.x - 3, this.worldCenter.y - 3, 6, 6);
+    this.context.fill();
+  }
 }
 
 export default Game;

@@ -8,6 +8,6 @@ setupSidebar();
 requestAnimationFrame(handleGameLoop);
 
 function handleGameLoop(elapsedTime) {
-    game.update(elapsedTime);
-    requestAnimationFrame(handleGameLoop);
+  game.update(elapsedTime);
+  requestAnimationFrame(handleGameLoop);
 }
