@@ -128,12 +128,12 @@ class Game {
       //const mA = (dpNormA * (a.mass - b.mass) + 2 * b.mass * dpNormB) / (a.mass + b.mass);
       //const mB = (dpNormB * (b.mass - a.mass) + 2 * a.mass * dpNormA) / (a.mass + b.mass);
       const mA =
-        (0.5 * b.mass * (dpNormB - dpNormA) +
+        (0.1 * b.mass * (dpNormB - dpNormA) +
           a.mass * dpNormA +
           b.mass * dpNormB) /
         (a.mass + b.mass);
       const mB =
-        (0.5 * a.mass * (dpNormA - dpNormB) +
+        (0.1 * a.mass * (dpNormA - dpNormB) +
           a.mass * dpNormA +
           b.mass * dpNormB) /
         (a.mass + b.mass);

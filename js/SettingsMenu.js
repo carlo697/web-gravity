@@ -54,6 +54,7 @@ function applyPlanetarySystemSettings() {
 
   const asteroids = parseInt(formData.get("asteroids"));
   const maxDistance = parseFloat(formData.get("maxDistance"));
+  const massMultiplier = parseFloat(formData.get("massMultiplier"));
 
   // Clear objs
   Game.instance.worldObjects.length = 0;
@@ -75,7 +76,8 @@ function applyPlanetarySystemSettings() {
     const y = randomDistance * Math.cos(randomAngle);
 
     // Spawn the asteorid
-    const obj = new MassObj(new Vector2(x, y), size, size * size * 4);
+    const mass = size * size * massMultiplier;
+    const obj = new MassObj(new Vector2(x, y), size, mass);
 
     // get tangent direction
     const dirr = Game.instance.sun.position.substract(obj.position);

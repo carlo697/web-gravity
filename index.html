@@ -29,7 +29,7 @@
 
 					<div class="form-control">
 						<label for="renderSquares">Render squares</label>
-						<input type="checkbox" name="renderSquares" id="renderSquares" checked="on">
+						<input type="checkbox" name="renderSquares" id="renderSquares">
 					</div>
 
 					<input type="submit" value="Apply Changes" id="submit">
@@ -48,6 +48,11 @@
 					<div class="form-control">
 						<label for="maxDistance">Max distance</label>
 						<input type="number" name="maxDistance" id="maxDistance" value="300" min="0" max="2000">
+					</div>
+
+					<div class="form-control">
+						<label for="massMultiplier">Mass multiplier</label>
+						<input type="number" name="massMultiplier" id="massMultiplier" value="3" min="0" max="100" step="0.001">
 					</div>
 
 					<input type="submit" value="Generate" id="submit">
