@@ -81,14 +81,14 @@ class Game {
 
       obj.velocity = new Vector2(
         obj.velocity.x + obj.aceleration.x * delta,
-        obj.velocity.y + obj.aceleration.y * delta
+        obj.velocity.y + obj.aceleration.y * delta,
       );
 
       obj.lasPosition = obj.position.copy;
 
       obj.position = new Vector2(
         obj.position.x + obj.velocity.x * delta,
-        obj.position.y + obj.velocity.y * delta
+        obj.position.y + obj.velocity.y * delta,
       );
     }
 
@@ -106,7 +106,7 @@ class Game {
       //const normal = b.position.substract(a.position).normalized;
       const normal = new Vector2(
         b.position.x - a.position.x,
-        b.position.y - a.position.y
+        b.position.y - a.position.y,
       ).normalized;
 
       // tangent
@@ -140,12 +140,12 @@ class Game {
 
       a.velocity = new Vector2(
         tangent.x * dpTanA + normal.x * mA,
-        tangent.y * dpTanA + normal.y * mA
+        tangent.y * dpTanA + normal.y * mA,
       );
 
       b.velocity = new Vector2(
         tangent.x * dpTanB + normal.x * mB,
-        tangent.y * dpTanB + normal.y * mB
+        tangent.y * dpTanB + normal.y * mB,
       );
     }
 
@@ -162,7 +162,7 @@ class Game {
     this.context.scale(cameraZoom, cameraZoom);
     this.context.translate(
       -window.innerWidth / 2 + cameraOffset.x,
-      -window.innerHeight / 2 + cameraOffset.y
+      -window.innerHeight / 2 + cameraOffset.y,
     );
 
     // rendering
@@ -182,7 +182,7 @@ class Game {
           obj.position.x - obj.radius,
           obj.position.y - obj.radius,
           obj.radius * 2,
-          obj.radius * 2
+          obj.radius * 2,
         );
       } else {
         // draw a circle
@@ -191,7 +191,7 @@ class Game {
           obj.position.y,
           obj.radius,
           0,
-          2 * Math.PI
+          2 * Math.PI,
         );
       }
 
