@@ -4,6 +4,10 @@ import Vector2 from "./Vector2.js";
 // number of frame samples averaged by the FPS counters
 const FPS_SAMPLE_SIZE = 100;
 
+// fraction of the overlap between touching bodies removed per frame
+// by pushing them apart along the contact normal
+const CONTACT_BETA = 0.3;
+
 class Game {
   static instance;
 
@@ -170,16 +174,33 @@ class Game {
       // Conservation of momentum
       //const mA = (dpNormA * (a.mass - b.mass) + 2 * b.mass * dpNormB) / (a.mass + b.mass);
       //const mB = (dpNormB * (b.mass - a.mass) + 2 * a.mass * dpNormA) / (a.mass + b.mass);
-      const mA =
+      let mA =
         (0.1 * b.mass * (dpNormB - dpNormA) +
           a.mass * dpNormA +
           b.mass * dpNormB) /
         (a.mass + b.mass);
-      const mB =
+      let mB =
         (0.1 * a.mass * (dpNormA - dpNormB) +
           a.mass * dpNormA +
           b.mass * dpNormB) /
         (a.mass + b.mass);
+
+      // push overlapping bodies apart: equal and opposite impulse along the
+      // normal (which points from a to b), so momentum and spin are conserved
+      const dist = Math.hypot(
+        b.position.x - a.position.x,
+        b.position.y - a.position.y,
+      );
+      const pen = a.radius + b.radius - dist;
+      if (dist > 0 && pen > 0 && delta > 0) {
+        const desired = (CONTACT_BETA * pen) / delta;
+        const rel = mB - mA; // separating speed along the normal
+        if (rel < desired) {
+          const d = desired - rel;
+          mA -= (d * b.mass) / (a.mass + b.mass);
+          mB += (d * a.mass) / (a.mass + b.mass);
+        }
+      }
 
       a.velocity = new Vector2(
         tangent.x * dpTanA + normal.x * mA,

@@ -39,17 +39,17 @@ class MassObj {
         // direction from this obj to the target obj
         let direction = new Vector2(
           target.position.x - this.position.x,
-          target.position.y - this.position.y
+          target.position.y - this.position.y,
         );
 
         // distance between this obj and the target obj
         let distance = Math.sqrt(
-          direction.x * direction.x + direction.y * direction.y
+          direction.x * direction.x + direction.y * direction.y,
         );
 
         let directionNormalized = new Vector2(
           direction.x / distance,
-          direction.y / distance
+          direction.y / distance,
         );
 
         // if both objects are touching
@@ -60,19 +60,8 @@ class MassObj {
             return;
           }
 
-          const overlapDistance =
-            0.5 * (distance - this.radius - target.radius);
-
-          this.position = new Vector2(
-            this.position.x + directionNormalized.x * overlapDistance,
-            this.position.y + directionNormalized.y * overlapDistance
-          );
-
-          target.position = new Vector2(
-            target.position.x - directionNormalized.x * overlapDistance,
-            target.position.y - directionNormalized.y * overlapDistance
-          );
-
+          // the overlap is resolved with a velocity push in Game.physicsFrame;
+          // moving positions here without changing velocities adds spin
           Game.instance.collidingPairs.push([this, target]);
           this.collidingObjs.push(target);
         }
