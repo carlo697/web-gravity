@@ -1,6 +1,9 @@
 import MassObj from "./MassObj.js";
 import Vector2 from "./Vector2.js";
 
+// number of frame samples averaged by the FPS counters
+const FPS_SAMPLE_SIZE = 100;
+
 class Game {
   static instance;
 
@@ -29,6 +32,16 @@ class Game {
     this.worldSize = new Vector2(1000, 1000);
     this.collidingPairs = [];
 
+    // Physics FPS counter
+    this.physicsFPSCounter = document.querySelector("#physicsFPS");
+    this.physicsFrameRegister = [];
+    this.physicsFrameIndex = 0;
+
+    // Render FPS counter
+    this.renderFPSCounter = document.querySelector("#FPS");
+    this.renderFrameRegister = [];
+    this.renderFrameIndex = 0;
+
     this.start();
   }
 
@@ -53,11 +66,27 @@ class Game {
     // update loop
     this.physicsFrame(delta);
 
+    // update the physics FPS counter
+    this.physicsFrameIndex = this.updateFPSCounter(
+      this.physicsFrameRegister,
+      this.physicsFrameIndex,
+      delta,
+      this.physicsFPSCounter,
+    );
+
     this.renderFrameAccumulated += delta;
 
     // render loop
     if (this.renderCount === this.skipRenderFrames) {
       this.renderFrame(this.renderFrameAccumulated);
+
+      // update the render FPS counter
+      this.renderFrameIndex = this.updateFPSCounter(
+        this.renderFrameRegister,
+        this.renderFrameIndex,
+        this.renderFrameAccumulated,
+        this.renderFPSCounter,
+      );
 
       this.renderFrameAccumulated = 0;
       this.renderCount = 0;
@@ -67,6 +96,20 @@ class Game {
 
     // request new frame
     this.lastFrameTime = elapsed;
+  }
+
+  updateFPSCounter(register, index, delta, counterElement) {
+    if (delta > 0) {
+      register[index] = 1 / delta;
+      index = (index + 1) % FPS_SAMPLE_SIZE;
+    }
+
+    if (counterElement && register.length > 0) {
+      const sum = register.reduce((total, value) => total + value, 0);
+      counterElement.textContent = (sum / register.length).toFixed(1);
+    }
+
+    return index;
   }
 
   physicsFrame(delta) {
